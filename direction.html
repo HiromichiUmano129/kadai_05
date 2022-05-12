@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>経路検索</title>
+<style>html,body{height:100%;}body{padding:0;margin:0;}h1{padding:0;margin:0;font-size:50%;}div{float:left;}</style>
+</head>
+<body>
+
+
+<!-- MAP[START] -->
+<div id="myMap" style='width:60%;height:70%;float:left;'></div>
+<!-- MAP[END] -->
+
+
+<!--Directions[START]-->
+<div>
+    出発地:<input type="text" id="from" value="東十条">
+    到着地:<input id="to" value="">
+    <select id="mode">
+        <option value="walking">徒歩</option>
+        <option value="cycling">自転車</option>
+        <option value="driving">自動車</option>
+    </select>
+    <input type="button" id="search" value="ルート検索">
+</div>
+<div id="direction"></div>
+<!-- Directions[END] -->
+
+
+
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=[ *** YOUR MY KEY *** ]' async defer></script>
+<script src="js/BmapQuery.js"></script>
+<script>
+//****************************************************************************************
+// BingMaps&BmapQuery
+//****************************************************************************************
+//Init
+function GetMap(){
+    //------------------------------------------------------------------------
+    //1. Instance
+    //------------------------------------------------------------------------
+    const map = new Bmap("#myMap");
+
+    //------------------------------------------------------------------------
+    //2. Display Map
+    //   startMap(lat, lon, "MapType", Zoom[1~20]);
+    //   MapType:[load, aerial,canvasDark,canvasLight,birdseye,grayscale,streetside]
+    //--------------------------------------------------
+    map.startMap(35.665100, 139.712000, "load", 15);
+    //----------------------------------------------------
+    
+    //3. Traffic
+    //   map.traffic();
+    //----------------------------------------------------
+    map.traffic();
+
+    //----------------------------------------------------
+    //3. Add Pushpin-Text
+    // pinText(lat, lon, "title", "subtitle", "text");
+    //----------------------------------------------------
+    
+    let pin = map.pinText(35.76389850159681, 139.72683934564603, "東十条駅","自宅からの最寄り駅","A");
+    //let pin = map.pinText(35.669127, 139.7029181, "G'sアカデミー","起業家養成学校","G's");
+
+    //------------------------------------------------------------------------
+    //4. Directions
+    // map.direction("#rootView", "from" , "to", waypoint[array]);
+    // !! 日本地図で表示してる場合のみルート検索可能（各国毎）以下パラメータ指定で制御も可能 !!
+    // +  [ English => https://www.bing.com/...&setLang=en&setMkt=en-US ]
+    // +  [ Japan   => https://www.bing.com/...&setLang=ja&setMkt=ja-JP ]
+    //------------------------------------------------------------------------
+    document.getElementById("search").onclick = function () {
+        //Get From,To
+        const from  = document.getElementById("from").value;  //StartPoint
+        const to    = document.getElementById("to").value;    //EndPoint
+        const mode  = document.getElementById("mode").value;  //RouteMode[walking,driving]
+        //経由地あり
+        //const array = ["池袋", "恵比寿"];                       //Waypoints...
+        //map.direction("#direction", mode, from, to, array);  //Direction Methed
+
+        //経由地なし
+        map.direction("#direction", mode, from , to, []);
+
+    };
+
+
+}
+
+</script>
+</body>
+</html>
